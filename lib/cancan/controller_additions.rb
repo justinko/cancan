@@ -151,6 +151,30 @@ module CanCan
       def authorize_resource(*args)
         ControllerResource.add_before_filter(self, :authorize_resource, *args)
       end
+      
+      # Sets up an after filter in your ApplicationController which ensures cancan is being used in every controller.
+      # This allows you to not worry about authorization on the controller level, just focus on your Ability file.
+      #
+      # Call this method directly in ApplicationController.
+      #
+      #   class ApplicationController
+      #     ensure_cancan_safety!
+      #   end
+      def ensure_cancan_safety!
+        after_filter do
+          raise CanCan::NotSafe unless instance_variable_defined?(:@_cancan)
+        end
+      end
+      
+      # This method allows a controller to bypass the cancan safety check. Just call it in any subclass of
+      # ApplicationController.
+      #
+      #   class BooksController < ApplicationController
+      #     cancan_safe
+      #   end
+      def cancan_safe
+        instance_variable_set(:@_cancan, true)
+      end
     end
 
     def self.included(base)

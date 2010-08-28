@@ -26,12 +26,15 @@ module CanCan
     end
 
     def load_resource
+      add_cancan_instance_variable
+      
       if !resource_instance && (parent? || member_action?)
         @controller.instance_variable_set("@#{instance_name}", load_resource_instance)
       end
     end
 
     def authorize_resource
+      add_cancan_instance_variable
       @controller.authorize!(authorization_action, resource_instance || resource_class)
     end
 
@@ -124,6 +127,10 @@ module CanCan
 
     def new_actions
       [:new, :create] + [@options[:new]].flatten
+    end
+    
+    def add_cancan_instance_variable
+      @controller.instance_variable_set(:@_cancan, true) unless @controller.instance_variable_defined?(:@_cancan)
     end
   end
 end

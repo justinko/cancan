@@ -4,6 +4,14 @@ module CanCan
 
   # Raised when removed code is called, an alternative solution is provided in message.
   class ImplementationRemoved < Error; end
+  
+  # Raised when cancan has not been called in a controller
+  class NotSafe < Error
+    def to_s
+      "CanCan was not called in this controller. Please use 'cancan_safe' " \
+      "if you would like to bypass this message."
+    end
+  end
 
   # This error is raised when a user isn't allowed to access a given controller action.
   # This usually happens within a call to ControllerAdditions#authorize! but can be

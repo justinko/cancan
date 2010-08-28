@@ -75,4 +75,14 @@ describe CanCan::ControllerAdditions do
     mock(@controller_class).before_filter(:only => [:show, :index]) { |options, block| block.call(@controller) }
     @controller_class.load_resource :foo => :bar, :only => [:show, :index]
   end
+  
+  it "ensure_cancan_safety! should setup an after filter which checks for cancan method calls" do
+    mock(@controller_class).after_filter
+    @controller_class.ensure_cancan_safety!
+  end
+  
+  it "cancan_safe should add @_cancan to the controller" do
+    @controller_class.cancan_safe
+    @controller_class.instance_variable_defined?(:@_cancan).should be_true
+  end
 end

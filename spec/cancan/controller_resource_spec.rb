@@ -248,4 +248,17 @@ describe CanCan::ControllerResource do
       CanCan::ControllerResource.new(@controller, :nested => :person)
     }.should raise_error(CanCan::ImplementationRemoved)
   end
+  
+  it "should add @_cancan to the controller when load_resource is called" do
+    resource = CanCan::ControllerResource.new(@controller, [])
+    resource.load_resource
+    @controller.instance_variable_defined?(:@_cancan).should be_true
+  end
+  
+  it "should add @_cancan to the controller when authorize_resource is called" do
+    stub(@controller).authorize!
+    resource = CanCan::ControllerResource.new(@controller, [])
+    resource.authorize_resource
+    @controller.instance_variable_defined?(:@_cancan).should be_true
+  end
 end
